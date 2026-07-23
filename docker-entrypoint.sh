@@ -58,7 +58,9 @@ case "$cmd" in
     rope="$d/MAIN.agc.bin"
     [ -f "$rope" ] || { echo "Rope not found: $rope — run 'agc assemble $veh' first." >&2; exit 1; }
     echo ">> yaAGC: loading $rope (listening on TCP 19697-19706)"
-    "$YAAGC" "$rope" &
+    # --nodebug makes the CPU free-run immediately; without it yaAGC halts at
+    # its (agc) monitor prompt and never drives the DSKY (blank display, dead keys).
+    "$YAAGC" --nodebug --quiet "$rope" &
     agc_pid=$!
     trap 'kill "$agc_pid" 2>/dev/null || true' EXIT
     sleep 1
@@ -80,7 +82,8 @@ EOF
 
   emulator|yaAGC)
     veh=${1:-lm}; d=$(rope_dir "$veh")
-    exec "$YAAGC" "$d/MAIN.agc.bin"
+    # --nodebug: free-run the simulation instead of stopping at the (agc) monitor.
+    exec "$YAAGC" --nodebug "$d/MAIN.agc.bin"
     ;;
 
   dsky|yaDSKY2)
