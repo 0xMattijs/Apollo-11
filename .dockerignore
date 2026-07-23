@@ -1,0 +1,7 @@
+.git
+.github
+Translations
+node_modules
+*.lockb
+*.md
+!README.md
